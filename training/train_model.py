@@ -27,7 +27,7 @@ X = df["clean_text"]
 y = df["label"]
 
 # Convert text to numerical vectors
-vectorizer = TfidfVectorizer()
+vectorizer = TfidfVectorizer(stop_words="english")
 X_vectorized = vectorizer.fit_transform(X)
 
 print(f"TF-IDF matrix shape: {X_vectorized.shape}")
