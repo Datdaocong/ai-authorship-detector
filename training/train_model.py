@@ -5,9 +5,10 @@ import pandas as pd
 
 from datetime import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
+from sklearn.model_selection import cross_val_score
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -15,7 +16,7 @@ from utils.preprocess import clean_text
 
 
 # Load dataset
-data_path = os.path.join(os.path.dirname(__file__), "..", "data", "dataset.csv")
+data_path = os.path.join(os.path.dirname(__file__), "..", "data", "dataset_better.csv")
 df = pd.read_csv(data_path)
 
 print(f"Loaded dataset with {len(df)} samples.")
@@ -28,8 +29,18 @@ X = df["clean_text"]
 y = df["label"]
 
 # Convert text to numerical vectors
-vectorizer = TfidfVectorizer(stop_words="english")
+vectorizer = TfidfVectorizer(
+    stop_words="english",
+    ngram_range=(1, 2),
+    min_df=2
+)
 X_vectorized = vectorizer.fit_transform(X)
+
+cv_model = LinearSVC()
+cv_scores = cross_val_score(cv_model, X_vectorized, y, cv=5)
+
+print("\nCross-validation scores:", cv_scores)
+print(f"Mean CV accuracy: {cv_scores.mean():.4f}")
 
 print(f"TF-IDF matrix shape: {X_vectorized.shape}")
 
@@ -46,7 +57,7 @@ print(f"Training samples: {X_train.shape[0]}")
 print(f"Testing samples: {X_test.shape[0]}")
 
 # Train model
-model = LogisticRegression(max_iter=1000)
+model = LinearSVC()
 model.fit(X_train, y_train)
 
 # Predict on test set
