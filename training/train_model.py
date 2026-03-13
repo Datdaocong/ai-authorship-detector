@@ -3,6 +3,7 @@ import sys
 import joblib
 import pandas as pd
 
+from datetime import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -56,6 +57,24 @@ accuracy = accuracy_score(y_test, y_pred)
 print(f"\nAccuracy: {accuracy:.4f}")
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
+
+accuracy = accuracy_score(y_test, y_pred)
+
+
+# Logging training results
+log_dir = os.path.join(os.path.dirname(__file__), "..", "logs")
+os.makedirs(log_dir, exist_ok=True)
+
+log_path = os.path.join(log_dir, "training_log.txt")
+
+with open(log_path, "a") as f:
+    f.write(f"Date: {datetime.now()}\n")
+    f.write(f"Dataset size: {len(df)}\n")
+    f.write(f"TFIDF features: {X_vectorized.shape[1]}\n")
+    f.write(f"Train samples: {X_train.shape[0]}\n")
+    f.write(f"Test samples: {X_test.shape[0]}\n")
+    f.write(f"Accuracy: {accuracy:.4f}\n")
+    f.write("-" * 40 + "\n")
 
 
 # Show most important words for each class
