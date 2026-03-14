@@ -16,7 +16,14 @@ from utils.preprocess import clean_text
 
 
 # Load dataset
-data_path = os.path.join(os.path.dirname(__file__), "..", "data", "dataset_better.csv")
+data_path = os.path.join(
+    os.path.dirname(__file__),
+    "..",
+    "data",
+    "processed",
+    "hc3_dataset.csv"
+)
+
 df = pd.read_csv(data_path)
 
 print(f"Loaded dataset with {len(df)} samples.")

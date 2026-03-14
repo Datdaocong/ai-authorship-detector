@@ -19,3 +19,17 @@ Train samples: 240
 Test samples: 60
 Accuracy: 1.0000
 ----------------------------------------
+Date: 2026-03-13 15:33:30.367015
+Dataset size: 85431
+TFIDF features: 742027
+Train samples: 68344
+Test samples: 17087
+Accuracy: 0.9665
+----------------------------------------
+Date: 2026-03-13 16:05:49.766922
+Dataset size: 85431
+TFIDF features: 742027
+Train samples: 68344
+Test samples: 17087
+Accuracy: 0.9665
+----------------------------------------
