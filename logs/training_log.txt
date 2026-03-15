@@ -89,3 +89,30 @@ Train samples: 8000
 Test samples: 2000
 Accuracy: 0.9070
 ----------------------------------------
+Dataset name: merged_real_v1_sample
+Feature mode: word
+Date: 2026-03-16 00:01:12.052908
+Dataset size: 10000
+TFIDF features: 137296
+Train samples: 8000
+Test samples: 2000
+Accuracy: 0.8770
+----------------------------------------
+Dataset name: merged_real_v1_sample
+Feature mode: char
+Date: 2026-03-16 00:02:16.346440
+Dataset size: 10000
+TFIDF features: 218749
+Train samples: 8000
+Test samples: 2000
+Accuracy: 0.9095
+----------------------------------------
+Dataset name: merged_real_v1_sample
+Feature mode: hybrid
+Date: 2026-03-16 00:03:03.027848
+Dataset size: 10000
+TFIDF features: 356045
+Train samples: 8000
+Test samples: 2000
+Accuracy: 0.9070
+----------------------------------------

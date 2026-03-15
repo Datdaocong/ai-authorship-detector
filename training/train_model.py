@@ -2,7 +2,8 @@ import os
 import sys
 import joblib
 import pandas as pd
-
+import csv
+from sklearn.metrics import precision_recall_fscore_support
 from datetime import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC
@@ -15,7 +16,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils.preprocess import clean_text
 
 # === FEATURES CONGIG ===
-FEATURE_MODE = "hybrid"
+FEATURE_MODE = "char"
 
 
 #==== DATASET CONFIG ====
@@ -120,6 +121,17 @@ print(f"\nAccuracy: {accuracy:.4f}")
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
 
+precision, recall, f1, _ = precision_recall_fscore_support(
+    y_test,
+    y_pred,
+    labels=["ai"],
+    average=None
+)
+
+ai_precision = float(precision[0])
+ai_recall = float(recall[0])
+ai_f1 = float(f1[0])
+
 cm = confusion_matrix(y_test, y_pred)
 print("\nConfusion Matrix:")
 print(cm)
@@ -143,6 +155,51 @@ with open(log_path, "a") as f:
     f.write(f"Accuracy: {accuracy:.4f}\n")
     f.write("-" * 40 + "\n")
 
+# Log experiment results
+experiments_log_path = os.path.join(
+    os.path.dirname(__file__),
+    "..",
+    "logs",
+    "experiments.csv"
+)
+
+os.makedirs(os.path.dirname(experiments_log_path), exist_ok=True)
+
+file_exists = os.path.exists(experiments_log_path)
+
+with open(experiments_log_path, "a", newline="", encoding="utf-8") as f:
+    writer = csv.writer(f)
+
+    if not file_exists:
+        writer.writerow([
+            "date",
+            "dataset_name",
+            "feature_mode",
+            "model_type",
+            "dataset_size",
+            "tfidf_features",
+            "cv_accuracy",
+            "test_accuracy",
+            "ai_precision",
+            "ai_recall",
+            "ai_f1"
+        ])
+
+    writer.writerow([
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        DATASET_NAME,
+        FEATURE_MODE,
+        "LinearSVC",
+        len(df),
+        X_vectorized.shape[1],
+        round(float(cv_scores.mean()), 4),
+        round(float(accuracy), 4),
+        round(ai_precision, 4),
+        round(ai_recall, 4),
+        round(ai_f1, 4),
+    ])
+
+print(f"\nExperiment logged to: {experiments_log_path}")
 
 # Show most important words for each class
 feature_names = vectorizer.get_feature_names_out()

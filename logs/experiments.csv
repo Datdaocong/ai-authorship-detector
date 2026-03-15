@@ -1,0 +1,4 @@
+date,dataset_name,feature_mode,model_type,dataset_size,tfidf_features,cv_accuracy,test_accuracy,ai_precision,ai_recall,ai_f1
+2026-03-16 00:01:12,merged_real_v1_sample,word,LinearSVC,10000,137296,0.8841,0.877,0.8696,0.887,0.8782
+2026-03-16 00:02:16,merged_real_v1_sample,char,LinearSVC,10000,218749,0.9081,0.9095,0.898,0.924,0.9108
+2026-03-16 00:03:03,merged_real_v1_sample,hybrid,LinearSVC,10000,356045,0.9137,0.907,0.8951,0.922,0.9084
