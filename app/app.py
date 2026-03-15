@@ -1,5 +1,7 @@
 import streamlit as st
+
 from predict import predict_text
+from research_summary import get_best_experiment, get_top_experiments
 
 st.set_page_config(
     page_title="AI Authorship Detector",
@@ -8,7 +10,9 @@ st.set_page_config(
 )
 
 st.title("🧠 AI Authorship Detector")
-st.caption("A lightweight detector for distinguishing human-written text from AI-generated text.")
+st.caption(
+    "A lightweight research-style demo for distinguishing human-written text from AI-generated text."
+)
 
 st.markdown("### About this model")
 st.write(
@@ -16,6 +20,46 @@ st.write(
     "with character-level TF-IDF features."
 )
 
+# =========================
+# Research summary section
+# =========================
+best_experiment = get_best_experiment()
+top_experiments = get_top_experiments()
+
+st.markdown("### Research Summary")
+
+if best_experiment is not None:
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.metric("Best Feature Mode", str(best_experiment["feature_mode"]))
+        st.metric("CV Accuracy", f"{float(best_experiment['cv_accuracy']):.4f}")
+        st.metric("Test Accuracy", f"{float(best_experiment['test_accuracy']):.4f}")
+
+    with col2:
+        st.metric("AI Precision", f"{float(best_experiment['ai_precision']):.4f}")
+        st.metric("AI Recall", f"{float(best_experiment['ai_recall']):.4f}")
+        st.metric("AI F1", f"{float(best_experiment['ai_f1']):.4f}")
+
+    st.caption(
+        f"Best experiment: dataset={best_experiment['dataset_name']}, "
+        f"model={best_experiment['model_type']}, "
+        f"features={best_experiment['feature_mode']}"
+    )
+else:
+    st.info(
+        "No experiment summary found yet. Train the model first to generate logs/experiments.csv."
+    )
+
+if top_experiments is not None:
+    st.markdown("### Top Experiments")
+    st.dataframe(top_experiments, use_container_width=True)
+
+st.divider()
+
+# =========================
+# Sample texts
+# =========================
 sample_human = (
     "I was tired after class, so I stopped by a small coffee shop near campus "
     "and spent an hour reviewing my notes before going home."
@@ -27,7 +71,8 @@ sample_ai = (
 )
 
 st.markdown("### Try a sample")
-col1, col2 = st.columns(2)
+
+col1, col2, col3 = st.columns([1, 1, 1])
 
 with col1:
     if st.button("Use Human-like Sample", use_container_width=True):
@@ -37,9 +82,17 @@ with col2:
     if st.button("Use AI-like Sample", use_container_width=True):
         st.session_state["input_text"] = sample_ai
 
+with col3:
+    if st.button("Clear Text", use_container_width=True):
+        st.session_state["input_text"] = ""
+
 default_text = st.session_state.get("input_text", "")
 
-st.markdown("### Input text")
+# =========================
+# Input section
+# =========================
+st.markdown("### Input Text")
+
 user_text = st.text_area(
     "Paste or type text to analyze",
     value=default_text,
@@ -49,6 +102,9 @@ user_text = st.text_area(
 
 analyze = st.button("Analyze Text", use_container_width=True)
 
+# =========================
+# Prediction section
+# =========================
 if analyze:
     result = predict_text(user_text)
 
@@ -82,6 +138,7 @@ if analyze:
         st.write(f"**Model:** {model_name}")
         st.write("**Classifier:** LinearSVC")
         st.write("**Features:** Character-level TF-IDF")
+        st.write("**Task:** Human vs AI authorship detection")
 
         st.markdown("## Cleaned Text Used by Model")
         st.code(cleaned_text)
