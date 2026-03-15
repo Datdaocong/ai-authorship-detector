@@ -6,6 +6,7 @@ OUTPUT_FILE = os.path.join(PROCESSED_DIR, "merged_real_v1_train.csv")
 
 DATASET_FILES = [
     "hc3_train.csv",
+    "hape_train.csv",
 ]
 
 REQUIRED_COLUMNS = ["text", "label", "source", "subdomain"]

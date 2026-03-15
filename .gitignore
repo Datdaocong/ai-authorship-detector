@@ -2,3 +2,8 @@ venv/
 .env/
 __pycache__/
 *.pyc
+# Large processed datasets
+data/processed/*.csv
+
+# Keep small placeholder files if needed
+!data/processed/.gitkeep
