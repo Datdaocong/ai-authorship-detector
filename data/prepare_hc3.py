@@ -24,7 +24,7 @@ for item in ds:
 df = pd.DataFrame(rows, columns=["text", "label"])
 
 os.makedirs("data/processed", exist_ok=True)
-output_path = "data/processed/hc3_dataset.csv"
+output_path = "data/processed/hc3_train.csv"
 df.to_csv(output_path, index=False, encoding="utf-8")
 
 print("Saved dataset:", output_path)
