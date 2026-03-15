@@ -14,10 +14,14 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.preprocess import clean_text
 
+# === FEATURES CONGIG ===
+FEATURE_MODE = "char"
+
+
 #==== DATASET CONFIG ====
-DATASET_NAME = "merged_real_v1" 
+DATASET_NAME = "merged_real_v1_sample" 
 DATASET_FILE = f"{DATASET_NAME}_train.csv"
-MODEL_NAME = DATASET_NAME
+MODEL_NAME = f"{DATASET_NAME}_{FEATURE_MODE}"
 
 
 # Load dataset
@@ -30,13 +34,8 @@ data_path = os.path.join(
 )
 
 df = pd.read_csv(data_path)
-print("Columns:", df.columns.tolist())
-print(df[["label", "source", "subdomain"]].head())
-print("Dataset:", DATASET_NAME)
 
-
-print(f"Loaded dataset with {len(df)} samples.")
-
+print("Feature mode: ", FEATURE_MODE)
 # Clean text
 df["clean_text"] = df["text"].apply(clean_text)
 
@@ -45,11 +44,22 @@ X = df["clean_text"]
 y = df["label"]
 
 # Convert text to numerical vectors
-vectorizer = TfidfVectorizer(
-    stop_words="english",
-    ngram_range=(1, 2),
-    min_df=2
-)
+if FEATURE_MODE == "word":
+    vectorizer = TfidfVectorizer(
+        stop_words="english",
+        ngram_range=(1, 2),
+        min_df=2
+    )
+
+elif FEATURE_MODE == "char":
+    vectorizer = TfidfVectorizer(
+        analyzer="char",
+        ngram_range=(3, 5),
+        min_df=2
+    )
+
+else:
+    raise ValueError(f"Unsupported FEATURE_MODE: {FEATURE_MODE}")
 X_vectorized = vectorizer.fit_transform(X)
 
 cv_model = LinearSVC()
@@ -96,6 +106,7 @@ log_path = os.path.join(log_dir, "training_log.txt")
 
 with open(log_path, "a") as f:
     f.write(f"Dataset name: {DATASET_NAME}\n")
+    f.write(f"Feature mode: {FEATURE_MODE}\n")
     f.write(f"Date: {datetime.now()}\n")
     f.write(f"Dataset size: {len(df)}\n")
     f.write(f"TFIDF features: {X_vectorized.shape[1]}\n")
