@@ -14,6 +14,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.preprocess import clean_text
 
+DATASET_NAME = "hc3" 
 
 # Load dataset
 data_path = os.path.join(
@@ -21,7 +22,7 @@ data_path = os.path.join(
     "..",
     "data",
     "processed",
-    "hc3_dataset.csv"
+    "hc3_train.csv"
 )
 
 df = pd.read_csv(data_path)
