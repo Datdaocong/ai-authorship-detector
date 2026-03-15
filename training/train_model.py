@@ -15,7 +15,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils.preprocess import clean_text
 
 #==== DATASET CONFIG ====
-DATASET_NAME = "hc3" 
+DATASET_NAME = "merged_real_v1" 
 DATASET_FILE = f"{DATASET_NAME}_train.csv"
 MODEL_NAME = DATASET_NAME
 
@@ -30,6 +30,10 @@ data_path = os.path.join(
 )
 
 df = pd.read_csv(data_path)
+print("Columns:", df.columns.tolist())
+print(df[["label", "source", "subdomain"]].head())
+print("Dataset:", DATASET_NAME)
+
 
 print(f"Loaded dataset with {len(df)} samples.")
 
@@ -91,6 +95,7 @@ os.makedirs(log_dir, exist_ok=True)
 log_path = os.path.join(log_dir, "training_log.txt")
 
 with open(log_path, "a") as f:
+    f.write(f"Dataset name: {DATASET_NAME}\n")
     f.write(f"Date: {datetime.now()}\n")
     f.write(f"Dataset size: {len(df)}\n")
     f.write(f"TFIDF features: {X_vectorized.shape[1]}\n")

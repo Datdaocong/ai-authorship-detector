@@ -33,3 +33,24 @@ Train samples: 68344
 Test samples: 17087
 Accuracy: 0.9665
 ----------------------------------------
+Date: 2026-03-15 16:33:29.998163
+Dataset size: 85431
+TFIDF features: 742027
+Train samples: 68344
+Test samples: 17087
+Accuracy: 0.9665
+----------------------------------------
+Date: 2026-03-15 19:34:48.557064
+Dataset size: 85431
+TFIDF features: 742027
+Train samples: 68344
+Test samples: 17087
+Accuracy: 0.9665
+----------------------------------------
+Date: 2026-03-15 19:36:42.247452
+Dataset size: 85431
+TFIDF features: 742027
+Train samples: 68344
+Test samples: 17087
+Accuracy: 0.9665
+----------------------------------------
