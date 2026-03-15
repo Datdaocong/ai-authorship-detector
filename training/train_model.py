@@ -14,7 +14,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.preprocess import clean_text
 
+#==== DATASET CONFIG ====
 DATASET_NAME = "hc3" 
+DATASET_FILE = f"{DATASET_NAME}_train.csv"
+MODEL_NAME = DATASET_NAME
+
 
 # Load dataset
 data_path = os.path.join(
@@ -22,7 +26,7 @@ data_path = os.path.join(
     "..",
     "data",
     "processed",
-    "hc3_train.csv"
+    DATASET_FILE
 )
 
 df = pd.read_csv(data_path)
@@ -120,7 +124,9 @@ for idx in top_negative_indices:
 model_dir = os.path.join(os.path.dirname(__file__), "..", "model")
 os.makedirs(model_dir, exist_ok=True)
 
-joblib.dump(model, os.path.join(model_dir, "detector.pkl"))
-joblib.dump(vectorizer, os.path.join(model_dir, "vectorizer.pkl"))
+joblib.dump(model, os.path.join(model_dir, f"{MODEL_NAME}_detector.pkl"))
+joblib.dump(vectorizer, os.path.join(model_dir, f"{MODEL_NAME}_vectorizer.pkl"))
 
 print("\nModel and vectorizer saved successfully.")
+print("Dataset:", DATASET_NAME)
+print("Samples:", len(df))
