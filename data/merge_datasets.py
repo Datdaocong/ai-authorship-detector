@@ -2,7 +2,9 @@ import os
 import pandas as pd
 
 PROCESSED_DIR = os.path.join("data", "processed")
-OUTPUT_FILE = os.path.join(PROCESSED_DIR, "merged_real_v1_train.csv")
+
+FULL_OUTPUT_FILE = os.path.join(PROCESSED_DIR, "merged_real_v1_full_train.csv")
+SAMPLE_OUTPUT_FILE = os.path.join(PROCESSED_DIR, "merged_real_v1_sample_train.csv")
 
 DATASET_FILES = [
     "hc3_train.csv",
@@ -11,20 +13,23 @@ DATASET_FILES = [
 
 REQUIRED_COLUMNS = ["text", "label", "source", "subdomain"]
 
+MAX_SAMPLES_PER_LABEL = 5000
+RANDOM_STATE = 42
 
-def load_and_validate_csv(file_path):
+
+def load_dataset(file_path):
     df = pd.read_csv(file_path)
 
-    missing_cols = [col for col in REQUIRED_COLUMNS if col not in df.columns]
+    missing_cols = [c for c in REQUIRED_COLUMNS if c not in df.columns]
     if missing_cols:
-        raise ValueError(f"Missing columns {missing_cols} in {file_path}")
+        raise ValueError(f"{file_path} missing columns {missing_cols}")
 
     df = df[REQUIRED_COLUMNS].copy()
 
     df["text"] = df["text"].astype(str).str.strip()
-    df["label"] = df["label"].astype(str).str.strip().str.lower()
-    df["source"] = df["source"].astype(str).str.strip().str.lower()
-    df["subdomain"] = df["subdomain"].astype(str).str.strip().str.lower()
+    df["label"] = df["label"].astype(str).str.lower()
+    df["source"] = df["source"].astype(str).str.lower()
+    df["subdomain"] = df["subdomain"].astype(str).str.lower()
 
     df = df[df["text"] != ""]
     df = df[df["label"].isin(["human", "ai"])]
@@ -33,31 +38,31 @@ def load_and_validate_csv(file_path):
 
 
 def main():
-    all_dfs = []
+    datasets = []
 
-    for filename in DATASET_FILES:
-        file_path = os.path.join(PROCESSED_DIR, filename)
+    for file in DATASET_FILES:
+        path = os.path.join(PROCESSED_DIR, file)
+        df = load_dataset(path)
+        datasets.append(df)
 
-        print(f"Loading: {file_path}")
-        df = load_and_validate_csv(file_path)
+    merged_df = pd.concat(datasets, ignore_index=True)
 
-        print(f"Samples: {len(df)}")
-        print(df['label'].value_counts())
-        print("-" * 40)
+    # save full dataset
+    merged_df.to_csv(FULL_OUTPUT_FILE, index=False)
 
-        all_dfs.append(df)
+    # create balanced sample
+    samples = []
+    for label in ["human", "ai"]:
+        label_df = merged_df[merged_df["label"] == label]
+        n = min(MAX_SAMPLES_PER_LABEL, len(label_df))
+        samples.append(label_df.sample(n=n, random_state=RANDOM_STATE))
 
-    merged_df = pd.concat(all_dfs, ignore_index=True)
+    sample_df = pd.concat(samples).sample(frac=1, random_state=RANDOM_STATE)
 
-    print("\nMerged dataset summary:")
-    print("Total samples:", len(merged_df))
-    print("\nLabel distribution:")
-    print(merged_df["label"].value_counts())
-    print("\nSource distribution:")
-    print(merged_df["source"].value_counts())
+    sample_df.to_csv(SAMPLE_OUTPUT_FILE, index=False)
 
-    merged_df.to_csv(OUTPUT_FILE, index=False, encoding="utf-8")
-    print(f"\nSaved merged dataset to: {OUTPUT_FILE}")
+    print("Merged dataset:", len(merged_df))
+    print("Sample dataset:", len(sample_df))
 
 
 if __name__ == "__main__":
