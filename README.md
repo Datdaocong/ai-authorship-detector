@@ -162,6 +162,9 @@ ai-authorship-detector
 # Demo
 ! [Demo Screenshot](assets/demo.png)
 
+# Link demo
+https://ai-aufrorship-detector.streamlit.app/
+
 ## Training the Model
 
 To reproduce the training pipeline:
