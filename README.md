@@ -162,6 +162,23 @@ ai-authorship-detector
 # Demo
 ! [Demo Screenshot](assets/demo.png)
 
+## Training the Model
+
+To reproduce the training pipeline:
+
+Prepare datasets:
+
+python data/prepare_hc3.py
+python data/prepare_hape.py
+
+Merge datasets:
+
+python data/merge_datasets.py
+
+Train the model:
+
+python training/train_model.py
+
 # Future Work
 
 Possible improvements:
