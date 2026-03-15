@@ -54,3 +54,38 @@ Train samples: 68344
 Test samples: 17087
 Accuracy: 0.9665
 ----------------------------------------
+Dataset name: merged_real_v1
+Date: 2026-03-15 19:55:29.538632
+Dataset size: 85431
+TFIDF features: 742027
+Train samples: 68344
+Test samples: 17087
+Accuracy: 0.9665
+----------------------------------------
+Dataset name: merged_real_v1_sample
+Feature mode: word
+Date: 2026-03-15 23:10:55.470676
+Dataset size: 10000
+TFIDF features: 137296
+Train samples: 8000
+Test samples: 2000
+Accuracy: 0.8770
+----------------------------------------
+Dataset name: merged_real_v1_sample
+Feature mode: char
+Date: 2026-03-15 23:11:52.238404
+Dataset size: 10000
+TFIDF features: 218749
+Train samples: 8000
+Test samples: 2000
+Accuracy: 0.9095
+----------------------------------------
+Dataset name: merged_real_v1_sample
+Feature mode: hybrid
+Date: 2026-03-15 23:17:39.265237
+Dataset size: 10000
+TFIDF features: 356045
+Train samples: 8000
+Test samples: 2000
+Accuracy: 0.9070
+----------------------------------------

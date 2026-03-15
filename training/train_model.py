@@ -7,7 +7,7 @@ from datetime import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 from sklearn.model_selection import cross_val_score
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -15,7 +15,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils.preprocess import clean_text
 
 # === FEATURES CONGIG ===
-FEATURE_MODE = "char"
+FEATURE_MODE = "hybrid"
 
 
 #==== DATASET CONFIG ====
@@ -44,22 +44,47 @@ X = df["clean_text"]
 y = df["label"]
 
 # Convert text to numerical vectors
+from sklearn.pipeline import FeatureUnion
+from sklearn.pipeline import Pipeline
+
 if FEATURE_MODE == "word":
+
     vectorizer = TfidfVectorizer(
         stop_words="english",
-        ngram_range=(1, 2),
+        ngram_range=(1,2),
         min_df=2
     )
 
 elif FEATURE_MODE == "char":
+
     vectorizer = TfidfVectorizer(
         analyzer="char",
-        ngram_range=(3, 5),
+        ngram_range=(3,5),
         min_df=2
     )
 
+elif FEATURE_MODE == "hybrid":
+
+    word_vectorizer = TfidfVectorizer(
+        stop_words="english",
+        ngram_range=(1,2),
+        min_df=2
+    )
+
+    char_vectorizer = TfidfVectorizer(
+        analyzer="char",
+        ngram_range=(3,5),
+        min_df=2
+    )
+
+    vectorizer = FeatureUnion([
+        ("word", word_vectorizer),
+        ("char", char_vectorizer)
+    ])
+
 else:
-    raise ValueError(f"Unsupported FEATURE_MODE: {FEATURE_MODE}")
+    raise ValueError("Unknown FEATURE_MODE")
+
 X_vectorized = vectorizer.fit_transform(X)
 
 cv_model = LinearSVC()
@@ -95,7 +120,10 @@ print(f"\nAccuracy: {accuracy:.4f}")
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
 
-accuracy = accuracy_score(y_test, y_pred)
+cm = confusion_matrix(y_test, y_pred)
+print("\nConfusion Matrix:")
+print(cm)
+
 
 
 # Logging training results
